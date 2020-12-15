@@ -1,5 +1,9 @@
 package client;
 
+import client.exception.ClientConfigurationException;
+import client.exception.ClientConnectionException;
+import client.exception.ClientDetachingException;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.function.Consumer;
@@ -16,26 +20,14 @@ public class Client {
     // required by mockito spy
     public Client() {}
 
-    public void setWriteToServer(PrintWriter writeToServer) throws IOException {
-        if (isDisconnected())
-            throw new IOException("socket already connected");
-        this.writeToServer = writeToServer;
-    }
-
-    public void setClientSocket(Socket clientSocket) {
-        this.clientSocket = clientSocket;
-    }
-
-    public void setReadFromServer(BufferedReader readFromServer) throws IOException {
-        if (isDisconnected())
-            throw new IOException("socket already connected");
-        this.readFromServer = readFromServer;
-    }
-
-    public Client(final Supplier<Socket> connectionProvider) throws IOException {
-        this.clientSocket = connectionProvider.get();
-        this.writeToServer = new PrintWriter(clientSocket.getOutputStream(), true);
-        this.readFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    public Client(final String ip, final int port) throws IOException {
+        try {
+            this.clientSocket = new Socket(ip, port);
+            this.writeToServer = new PrintWriter(clientSocket.getOutputStream(), true);
+            this.readFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (IOException ioException) {
+            throw new ClientConnectionException("Client(): error connecting to server", ioException);
+        }
     }
 
     public void connect(
@@ -43,12 +35,7 @@ public class Client {
             final Consumer<String> outputConsumer
     ) throws IOException {
         outputConsumer.accept(readFromServer.readLine());
-        System.out.println(readFromServer.readLine());
-//        Scanner scanner = new Scanner(System.in);
-        // TODO: make input to server as a flexible source
-        // TODO: set custom termination command
         run(inputProvider, outputConsumer);
-        System.out.println("disconnecting");
         disconnect();
     }
 
@@ -59,11 +46,9 @@ public class Client {
     {
         String userInput;
         do {
-//            userInput = scanner.nextLine().trim();
             userInput = inputProvider.get();
             String serverResponse = sendMessage(userInput);
             outputConsumer.accept(serverResponse);
-            System.out.println(serverResponse);
         } while(!userInput.equals(TERMINATION_COMMAND));
     }
 
@@ -74,14 +59,35 @@ public class Client {
         return serverResponse;
     }
 
-    public boolean isDisconnected() {
+    public boolean isConnected() {
         return clientSocket != null && clientSocket.isConnected();
     }
 
-    public void disconnect() throws IOException
-    {
-        writeToServer.close();
-        readFromServer.close();
-        clientSocket.close();
+    public void disconnect() {
+        try {
+            writeToServer.close();
+            readFromServer.close();
+            clientSocket.close();
+        } catch (IOException ioException) {
+            throw new ClientDetachingException("Client:disconnect(): failed to disconnect", ioException);
+        }
+    }
+
+    public void setWriteToServer(PrintWriter writeToServer) {
+        if (isConnected())
+            throw new ClientConfigurationException("Client:setWriter(): socket already connected");
+        this.writeToServer = writeToServer;
+    }
+
+    public void setClientSocket(Socket clientSocket) {
+        if (isConnected())
+            throw new ClientConfigurationException("Client:setSocket(): socket already connected");
+        this.clientSocket = clientSocket;
+    }
+
+    public void setReadFromServer(BufferedReader readFromServer) {
+        if (isConnected())
+            throw new ClientConfigurationException("Client:setReader(): socket already connected");
+        this.readFromServer = readFromServer;
     }
 }

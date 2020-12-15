@@ -23,14 +23,16 @@ public class ClientTests {
     @Mock Socket mockSocket;
 
     @BeforeEach
-    public void init() throws IOException {
+    public void init() {
         spyClient.setWriteToServer(mockWriterToServer);
         spyClient.setReadFromServer(mockReaderFromServer);
         spyClient.setClientSocket(mockSocket);
+        when(mockSocket.isConnected()).thenReturn(true);
     }
 
     @AfterEach
-    public void destroy() throws IOException {
+    public void destroy() {
+        when(mockSocket.isConnected()).thenReturn(false);
         spyClient.setWriteToServer(null);
         spyClient.setReadFromServer(null);
         spyClient.setClientSocket(null);

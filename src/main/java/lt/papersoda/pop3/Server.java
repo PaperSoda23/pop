@@ -1,50 +1,50 @@
 package lt.papersoda.pop3;
 
-import lt.papersoda.pop3.core.IRequestParser;
-import lt.papersoda.pop3.core.IRequestProcessor;
-import lt.papersoda.pop3.core.RequestProcessor;
-import lt.papersoda.pop3.pojo.Response;
+import lt.papersoda.pop3.user.UserSession;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server implements IServer {
-    IRequestProcessor requestProcessor = new RequestProcessor();
+public class Server implements Runnable {
+    private boolean isRunning;
+    private final int port;
+    private final ServerSocket serverSocket;
 
-    public void start(int port) throws IOException {
-        var serverSocket = new ServerSocket(port);
-        Socket clientSocket = serverSocket.accept();
-
-        var writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
-        var readFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-        writeToClient.println("+OK POP3 connected");
-
-        while(clientSocket.isConnected()) {
-            String message = readFromClient.readLine();
-            System.out.println("from client: " + message);
-            Response response = requestProcessor.processClientRequest(message);
-            writeToClient.println(response.getResponse());
-        }
-
-        stop(clientSocket, serverSocket, writeToClient, readFromClient);
-        System.out.println("server stops");
+    public Server(int port) throws IOException {
+        this.port = port;
+        this.serverSocket = new ServerSocket(port);
     }
 
-    private void stop(
-            final Socket clientSocket,
-            final ServerSocket serverSocket,
-            final PrintWriter writeToClient,
-            final BufferedReader readFromClient
-    ) throws IOException
-    {
-        writeToClient.close();
-        readFromClient.close();
-        clientSocket.close();
-        serverSocket.close();
+    @Override
+    public void run() {
+        while(isRunning) {
+            try {
+                Socket clientSocket = serverSocket.accept();
+                UserSession userSession = new UserSession(clientSocket);
+                new Thread(userSession).start();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } finally {
+                try {
+                    serverSocket.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void start() {
+        this.isRunning = true;
+        new Thread(this).start();
+    }
+
+    public void stop() {
+        this.isRunning = false;
+    }
+
+    public int getPort() {
+        return port;
     }
 }

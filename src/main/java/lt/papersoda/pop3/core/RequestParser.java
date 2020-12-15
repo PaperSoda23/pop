@@ -1,6 +1,6 @@
 package lt.papersoda.pop3.core;
 
-import lt.papersoda.pop3.enums.PopCommands;
+import lt.papersoda.pop3.commands.enums.PopCommands;
 import lt.papersoda.pop3.pojo.ClientRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;

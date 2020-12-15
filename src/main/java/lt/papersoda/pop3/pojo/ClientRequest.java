@@ -1,6 +1,6 @@
 package lt.papersoda.pop3.pojo;
 
-import lt.papersoda.pop3.enums.PopCommands;
+import lt.papersoda.pop3.commands.enums.PopCommands;
 
 import java.util.List;
 

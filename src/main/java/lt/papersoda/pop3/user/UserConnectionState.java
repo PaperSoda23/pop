@@ -1,4 +1,4 @@
-package lt.papersoda.pop3.enums;
+package lt.papersoda.pop3.user;
 
 public enum UserConnectionState {
     AUTHORIZATION,

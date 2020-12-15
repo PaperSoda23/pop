@@ -25,13 +25,18 @@ public class Server implements Runnable {
                 new Thread(userSession).start();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
-            } finally {
                 try {
                     serverSocket.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+        }
+
+        try {
+            serverSocket.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 

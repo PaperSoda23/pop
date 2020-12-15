@@ -9,11 +9,12 @@ import lt.papersoda.pop3.pojo.Response;
 public class RequestHandler implements IRequestHandler {
 
     public Response handleClientRequest(ClientRequest clientRequest) {
-
-        return switch(clientRequest.getCommand()) {
+        Response response = switch(clientRequest.getCommand()) {
             case USER -> new UserCommand().apply(clientRequest.getArguments());
             case PASS -> new PassCommand().apply(clientRequest.getArguments());
             default -> new Response("command not recognized");
         };
+
+        return response;
     }
 }

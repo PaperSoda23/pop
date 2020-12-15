@@ -1,5 +1,10 @@
 package lt.papersoda.pop3;
 
+import lt.papersoda.pop3.core.IRequestParser;
+import lt.papersoda.pop3.core.IRequestProcessor;
+import lt.papersoda.pop3.core.RequestProcessor;
+import lt.papersoda.pop3.pojo.Response;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +13,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server implements IServer {
+    IRequestProcessor requestProcessor = new RequestProcessor();
+
     public void start(int port) throws IOException {
         var serverSocket = new ServerSocket(port);
         Socket clientSocket = serverSocket.accept();
@@ -20,7 +27,8 @@ public class Server implements IServer {
         while(clientSocket.isConnected()) {
             String message = readFromClient.readLine();
             System.out.println("from client: " + message);
-            writeToClient.println("+ OK");
+            Response response = requestProcessor.processClientRequest(message);
+            writeToClient.println(response.getResponse());
         }
 
         stop(clientSocket, serverSocket, writeToClient, readFromClient);

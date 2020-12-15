@@ -8,7 +8,6 @@ import java.util.Arrays;
 public class RequestParser implements IRequestParser {
 
     public ClientRequest parseClientRequest(final String rawRequest) {
-
         final String[] words = rawRequest.split(" ");
 
         return new ClientRequest(

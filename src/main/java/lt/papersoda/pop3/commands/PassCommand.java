@@ -7,6 +7,6 @@ import java.util.List;
 public class PassCommand implements ICommand {
     @Override
     public Response apply(List<String> arguments) {
-        return null;
+        return new Response("response from pass command");
     }
 }

@@ -1,6 +1,6 @@
 package lt.papersoda.pop3.enums;
 
-public enum AvailableCommands {
+public enum PopCommands {
     /**
      * State: AUTHORIZATION
      * params: 1 (user name)
@@ -17,5 +17,7 @@ public enum AvailableCommands {
     RETR,
     TOP,
     DELE,
-    QUIT
+    QUIT,
+
+    UNRECOGNIZED
 }

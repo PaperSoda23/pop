@@ -1,16 +1,16 @@
 package lt.papersoda.pop3.pojo;
 
-import lt.papersoda.pop3.enums.AvailableCommands;
+import lt.papersoda.pop3.enums.PopCommands;
 
 import java.util.List;
 
 public class ClientRequest {
-    private final AvailableCommands command;
+    private final PopCommands command;
     private final String commandStr;
     private final List<String> arguments;
 
     public ClientRequest(
-            final AvailableCommands command,
+            final PopCommands command,
             final String commandStr,
             final List<String> arguments
     ) {
@@ -19,7 +19,7 @@ public class ClientRequest {
         this.arguments = arguments;
     }
 
-    public AvailableCommands getCommand() {
+    public PopCommands getCommand() {
         return command;
     }
 

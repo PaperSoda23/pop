@@ -23,7 +23,6 @@ public class RequestParser implements IRequestParser {
         ) {
             return new ClientRequest(
                     PopCommands.UNRECOGNIZED,
-                    "",
                     List.of()
             );
         }
@@ -31,14 +30,12 @@ public class RequestParser implements IRequestParser {
         if (hasArguments.test(words)) {
             return new ClientRequest(
                     PopCommands.valueOf(words[0]),
-                    words[0],
                     Arrays.asList(words).subList(1, words.length)
             );
         }
 
         return new ClientRequest(
                 PopCommands.valueOf(words[0]),
-                words[0],
                 List.of()
         );
     }

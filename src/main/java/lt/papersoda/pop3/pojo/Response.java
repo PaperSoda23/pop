@@ -3,11 +3,11 @@ package lt.papersoda.pop3.pojo;
 import lt.papersoda.pop3.db.entity.UserEntity;
 import lt.papersoda.pop3.user.UserConnectionState;
 
-public class Response {
-    private final String response;
-    private UserEntity user;
-    private UserConnectionState userConnectionState = UserConnectionState.AUTHORIZATION;
-    private boolean shouldUserConnectionStateChange = false;
+public abstract class Response {
+    protected final String response;
+    protected UserEntity user;
+    protected UserConnectionState userConnectionState = UserConnectionState.AUTHORIZATION;
+    protected boolean shouldUserConnectionStateChange = false;
 
     public boolean getShouldUserConnectionStateChange() {
         return shouldUserConnectionStateChange;
@@ -42,5 +42,4 @@ public class Response {
     public UserConnectionState getUserConnectionState() {
         return userConnectionState;
     }
-
 }

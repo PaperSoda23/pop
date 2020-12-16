@@ -2,7 +2,9 @@ package lt.papersoda.pop3.commands;
 
 import lt.papersoda.pop3.db.entity.UserEntity;
 import lt.papersoda.pop3.db.repository.IUserRepository;
+import lt.papersoda.pop3.pojo.ErrorResponse;
 import lt.papersoda.pop3.pojo.Response;
+import lt.papersoda.pop3.pojo.SuccessResponse;
 import lt.papersoda.pop3.user.UserConnectionState;
 import lt.papersoda.pop3.user.UserSessionState;
 import org.apache.commons.lang3.ObjectUtils;
@@ -24,22 +26,22 @@ public class UserCommand implements ICommand {
     @Override
     public Response apply(List<String> arguments, UserSessionState userSessionState) {
         if (userSessionState.getUserConnectionState() != UserConnectionState.AUTHORIZATION)
-            return new Response("-ERR: invalid connection state");
+            return new ErrorResponse("invalid connection state");
 
         if (ObjectUtils.isNotEmpty(userSessionState.getUser()))
-            return new Response("-ERR: user already set");
+            return new ErrorResponse("user already set");
 
         if (argumentsNotValid(arguments))
-            return new Response("-ERR: invalid command arguments");
+            return new ErrorResponse("invalid command arguments");
 
         final Optional<UserEntity> user = userRepository.findUserByName(arguments.get(0));
 
         if (user.isEmpty())
-            return new Response("-ERR: user not found");
+            return new ErrorResponse("user not found");
 
         userSessionState.setUser(user.get());
 
-        return new Response("+OK: response from user command");
+        return new SuccessResponse("");
     }
 
     private boolean argumentsNotValid(List<String> arguments) {

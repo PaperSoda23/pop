@@ -1,6 +1,7 @@
 package lt.papersoda.pop3;
 
 import lt.papersoda.pop3.user.UserSession;
+import org.springframework.beans.factory.BeanFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;

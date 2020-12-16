@@ -7,6 +7,7 @@ import java.util.List;
 public class PassCommand implements ICommand {
     @Override
     public Response apply(List<String> arguments) {
+        // check if passwords match
         return new Response("response from pass command");
     }
 }

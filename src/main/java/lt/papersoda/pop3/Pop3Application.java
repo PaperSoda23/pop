@@ -1,5 +1,6 @@
 package lt.papersoda.pop3;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
@@ -15,5 +16,7 @@ public class Pop3Application {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+
+        SpringApplication.run(Pop3Application.class, args);
     }
 }

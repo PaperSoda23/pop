@@ -9,6 +9,7 @@ public class ClientRequest {
     private final String commandStr;
     private final List<String> arguments;
 
+
     public ClientRequest(
             final PopCommands command,
             final String commandStr,
@@ -18,6 +19,7 @@ public class ClientRequest {
         this.commandStr = commandStr;
         this.arguments = arguments;
     }
+
 
     public PopCommands getCommand() {
         return command;

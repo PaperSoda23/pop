@@ -4,10 +4,9 @@ import lt.papersoda.pop3.pojo.Response;
 
 import java.util.List;
 
-public class UserCommand implements ICommand {
+public class RetrCommand implements ICommand {
     @Override
     public Response apply(List<String> arguments) {
-        // check if user with name exists
-        return new Response("response from user command");
+        return null;
     }
 }

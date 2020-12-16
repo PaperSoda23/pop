@@ -4,11 +4,13 @@ import lt.papersoda.pop3.commands.enums.PopCommands;
 import lt.papersoda.pop3.pojo.ClientRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
+@Service
 public class RequestParser implements IRequestParser {
 
     public ClientRequest parseClientRequest(final String rawRequest) {

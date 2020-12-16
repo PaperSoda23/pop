@@ -1,9 +1,7 @@
 package lt.papersoda.pop3.user;
 
 import lt.papersoda.pop3.core.IRequestProcessor;
-import lt.papersoda.pop3.core.RequestProcessor;
 import lt.papersoda.pop3.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,11 +13,12 @@ public class UserSession implements Runnable {
     private final Socket clientSocket;
     private final PrintWriter writeToClient;
     private final BufferedReader readFromClient;
-    private final IRequestProcessor requestProcessor = new RequestProcessor();
-    private UserConnectionState userConnectionState = UserConnectionState.AUTHORIZATION;
+    private final IRequestProcessor requestProcessor;
+    private final UserSessionState userSessionState = new UserSessionState();
 
-    public UserSession(Socket clientSocket) throws IOException {
+    public UserSession(Socket clientSocket, IRequestProcessor requestProcessor) throws IOException {
         this.clientSocket = clientSocket;
+        this.requestProcessor = requestProcessor;
         this.writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
         this.readFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
@@ -37,7 +36,11 @@ public class UserSession implements Runnable {
                 ioException.printStackTrace();
             }
             System.out.println("from client: " + message);
-            Response response = requestProcessor.processClientRequest(message, userConnectionState);
+            Response response = requestProcessor.processClientRequest(message, userSessionState);
+
+            if (response.getShouldUserConnectionStateChange())
+                userSessionState.setUserConnectionState(response.getUserConnectionState());
+
             writeToClient.println(response.getResponse());
         }
 

@@ -22,4 +22,12 @@ public class UserEntity {
     @OneToMany(mappedBy = "client", fetch=FetchType.LAZY, cascade = CascadeType.REMOVE)
     @Fetch(value= FetchMode.SELECT)
     private List<MailEntity> mails;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public List<MailEntity> getMails() {
+        return mails;
+    }
 }

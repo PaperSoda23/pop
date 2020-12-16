@@ -14,6 +14,11 @@ public enum PopCommands {
      */
     PASS,
     STAT,
+    /**
+     * State: TRANSACTION
+     * params: 1 (mail id)
+     * example RETR 3
+     */
     RETR,
     TOP,
     DELE,

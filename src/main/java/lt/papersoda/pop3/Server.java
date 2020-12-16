@@ -1,19 +1,21 @@
 package lt.papersoda.pop3;
 
+import lt.papersoda.pop3.core.IRequestProcessor;
 import lt.papersoda.pop3.user.UserSession;
-import org.springframework.beans.factory.BeanFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server implements Runnable {
+public class Server implements Runnable, IServer {
     private boolean isRunning;
     private final int port;
     private final ServerSocket serverSocket;
+    private final IRequestProcessor requestProcessor;
 
-    public Server(int port) throws IOException {
+    public Server(int port, IRequestProcessor requestProcessor) throws IOException {
         this.port = port;
+        this.requestProcessor = requestProcessor;
         this.serverSocket = new ServerSocket(port);
     }
 
@@ -22,7 +24,7 @@ public class Server implements Runnable {
         while(isRunning) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                UserSession userSession = new UserSession(clientSocket);
+                UserSession userSession = new UserSession(clientSocket, requestProcessor);
                 new Thread(userSession).start();
             } catch (IOException ioException) {
                 ioException.printStackTrace();

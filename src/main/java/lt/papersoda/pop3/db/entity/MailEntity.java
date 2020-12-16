@@ -15,4 +15,9 @@ public class MailEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity client;
+
+    @Override
+    public String toString() {
+        return "mail: " + text;
+    }
 }

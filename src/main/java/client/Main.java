@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
     private static final String ip = "127.0.0.1";
-    private static final int port = 3333;
+    private static final int port = 3334;
 
     public static void main(String[] args) {
         try {

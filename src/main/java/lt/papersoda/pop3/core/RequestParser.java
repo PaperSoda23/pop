@@ -4,6 +4,7 @@ import lt.papersoda.pop3.commands.enums.PopCommands;
 import lt.papersoda.pop3.pojo.ClientRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -14,6 +15,11 @@ import java.util.function.Predicate;
 public class RequestParser implements IRequestParser {
 
     public ClientRequest parseClientRequest(final String rawRequest) {
+        var unrecognizedRequest = new ClientRequest(PopCommands.UNRECOGNIZED, List.of());
+
+        if (StringUtils.isEmpty(rawRequest))
+            return unrecognizedRequest;
+
         final String[] words = rawRequest.trim().split(" ");
         final Predicate<String[]> hasArguments = (elements) -> elements.length > 1;
 
@@ -21,10 +27,7 @@ public class RequestParser implements IRequestParser {
                 ArrayUtils.isEmpty(words)
                 || !EnumUtils.isValidEnum(PopCommands.class, words[0])
         ) {
-            return new ClientRequest(
-                    PopCommands.UNRECOGNIZED,
-                    List.of()
-            );
+            return unrecognizedRequest;
         }
 
         if (hasArguments.test(words)) {

@@ -5,10 +5,12 @@ import lt.papersoda.pop3.pojo.Response;
 import lt.papersoda.pop3.pojo.SuccessResponse;
 import lt.papersoda.pop3.user.UserConnectionState;
 import lt.papersoda.pop3.user.UserSessionState;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
+@Service
 public class PassCommand implements ICommand {
     @Override
     public Response apply(List<String> arguments, UserSessionState userSessionState) {

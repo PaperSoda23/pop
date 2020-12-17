@@ -6,7 +6,6 @@ import lt.papersoda.pop3.pojo.Response;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -47,8 +46,10 @@ public class UserSession implements Runnable {
     }
 
     public void stop() throws IOException {
-        this.writeToClient.close();
-        this.readFromClient.close();
-        this.clientSocket.close();
+        if (!clientSocket.isClosed()) {
+            this.writeToClient.close();
+            this.readFromClient.close();
+            this.clientSocket.close();
+        }
     }
 }

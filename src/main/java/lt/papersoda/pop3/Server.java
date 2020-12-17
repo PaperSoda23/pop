@@ -32,10 +32,9 @@ public class Server implements Runnable, IServer {
                 closeServerSocket();
             }
         }
-        closeServerSocket();
     }
 
-    protected void closeServerSocket() {
+    public void closeServerSocket() {
         try { this.serverSocket.close(); }
         catch (IOException ioException) { ioException.printStackTrace(); }
     }
@@ -47,6 +46,23 @@ public class Server implements Runnable, IServer {
 
     public void stop() {
         this.isRunning = false;
+        closeServerSocket();
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public IRequestProcessor getRequestProcessor() {
+        return requestProcessor;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public boolean getIsRunning() {
+        return isRunning;
     }
 
     public int getPort() {

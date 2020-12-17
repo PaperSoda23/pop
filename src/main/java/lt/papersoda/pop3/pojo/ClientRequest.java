@@ -8,7 +8,6 @@ public class ClientRequest {
     private final PopCommands command;
     private final List<String> arguments;
 
-
     public ClientRequest(
             final PopCommands command,
             final List<String> arguments
@@ -17,11 +16,9 @@ public class ClientRequest {
         this.arguments = arguments;
     }
 
-
     public PopCommands getCommand() {
         return command;
     }
-
 
     public List<String> getArguments() {
         return arguments;

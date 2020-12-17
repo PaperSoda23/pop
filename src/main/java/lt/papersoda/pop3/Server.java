@@ -1,6 +1,7 @@
 package lt.papersoda.pop3;
 
 import lt.papersoda.pop3.core.IRequestProcessor;
+import lt.papersoda.pop3.facade.SocketCreator;
 import lt.papersoda.pop3.user.UserSession;
 
 import java.io.IOException;
@@ -16,31 +17,27 @@ public class Server implements Runnable, IServer {
     public Server(int port, IRequestProcessor requestProcessor) throws IOException {
         this.port = port;
         this.requestProcessor = requestProcessor;
-        this.serverSocket = new ServerSocket(port);
+        this.serverSocket = SocketCreator.createServerSocket(port);
     }
 
     @Override
     public void run() {
         while(isRunning) {
             try {
-                Socket clientSocket = serverSocket.accept();
+                Socket clientSocket = SocketCreator.acceptClientSocket(serverSocket);
                 UserSession userSession = new UserSession(clientSocket, requestProcessor);
                 new Thread(userSession).start();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                closeServerSocket();
             }
         }
+        closeServerSocket();
+    }
 
-        try {
-            serverSocket.close();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+    protected void closeServerSocket() {
+        try { this.serverSocket.close(); }
+        catch (IOException ioException) { ioException.printStackTrace(); }
     }
 
     public void start() {

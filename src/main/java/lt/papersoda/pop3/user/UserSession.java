@@ -1,6 +1,7 @@
 package lt.papersoda.pop3.user;
 
 import lt.papersoda.pop3.core.IRequestProcessor;
+import lt.papersoda.pop3.facade.SocketIO;
 import lt.papersoda.pop3.pojo.Response;
 
 import java.io.BufferedReader;
@@ -19,36 +20,30 @@ public class UserSession implements Runnable {
     public UserSession(Socket clientSocket, IRequestProcessor requestProcessor) throws IOException {
         this.clientSocket = clientSocket;
         this.requestProcessor = requestProcessor;
-        this.writeToClient = new PrintWriter(clientSocket.getOutputStream(), true);
-        this.readFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        this.writeToClient = SocketIO.createSocketWriter(clientSocket);
+        this.readFromClient = SocketIO.createSocketReader(clientSocket);
     }
 
-    // TODO: wrap sockets in a wrapper
     @Override
     public void run() {
-        writeToClient.println("+OK POP3 connected");
+        SocketIO.writeToClient(writeToClient, "+OK POP3 connected");
 
         while(clientSocket.isConnected()) {
             String message = null;
-            try {
-                message = readFromClient.readLine();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            try { message = SocketIO.readFromClient(readFromClient); }
+            catch (IOException ioException) { ioException.printStackTrace(); }
+
             System.out.println("from client: " + message);
             Response response = requestProcessor.processClientRequest(message, userSessionState);
 
             if (response.getShouldUserConnectionStateChange())
                 userSessionState.setUserConnectionState(response.getUserConnectionState());
 
-            writeToClient.println(response.getResponse());
+            SocketIO.writeToClient(writeToClient, response.getResponse());
         }
 
-        try {
-            stop();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+        try { stop(); }
+        catch (IOException ioException) { ioException.printStackTrace(); }
     }
 
     public void stop() throws IOException {

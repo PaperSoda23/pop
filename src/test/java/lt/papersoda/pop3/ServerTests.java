@@ -21,10 +21,10 @@ public class ServerTests {
     private final int port = 3330;
 
     public void mockStaticSocketCreation() throws IOException {
-        var mockedStatic = mockStatic(SocketCreator.class);
-        mockedStatic.when((MockedStatic.Verification) SocketCreator
-                                                        .createServerSocket(port))
-                                                            .thenReturn(mockServerSocket);
+        mockStatic(SocketCreator.class)
+                .when((MockedStatic.Verification) SocketCreator
+                        .createServerSocket(port))
+                            .thenReturn(mockServerSocket);
     }
 
     @Test

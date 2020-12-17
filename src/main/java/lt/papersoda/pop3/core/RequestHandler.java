@@ -4,6 +4,7 @@ import lt.papersoda.pop3.commands.PassCommand;
 import lt.papersoda.pop3.commands.RetrCommand;
 import lt.papersoda.pop3.commands.UserCommand;
 import lt.papersoda.pop3.pojo.ClientRequest;
+import lt.papersoda.pop3.pojo.ErrorResponse;
 import lt.papersoda.pop3.pojo.Response;
 import lt.papersoda.pop3.user.UserSessionState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class RequestHandler implements IRequestHandler {
             case USER -> userCommand.apply(clientRequest.getArguments(), userSessionState);
             case PASS -> new PassCommand().apply(clientRequest.getArguments(), userSessionState);
             case RETR -> retrCommand.apply(clientRequest.getArguments(), userSessionState);
-            default -> new Response("command not recognized");
+            default -> new ErrorResponse("command not recognized");
         };
 
         return response;
